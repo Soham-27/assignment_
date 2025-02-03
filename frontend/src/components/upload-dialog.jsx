@@ -52,7 +52,7 @@ export function UploadDialog({ open, onOpenChange, folderId }) {
       for (let file of files) {
         // Get pre-signed URL from backend
         const { data } = await axios.get(
-          `http://localhost:8000/generate-presigned-url`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URI}/generate-presigned-url`,
           {
             params: { file_name: file.name }, // Pass file name for URL generation
           }
@@ -74,7 +74,7 @@ export function UploadDialog({ open, onOpenChange, folderId }) {
 
         // Step 2: Store the file metadata in DB
         console.log("Uploading file metadata...");
-        await axios.post("http://localhost:8000/file", {
+        await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URI}/file`, {
           folder_id: String(folderId),
           file_name: String(file.name),
           file_size: String(file.size),
@@ -97,9 +97,12 @@ export function UploadDialog({ open, onOpenChange, folderId }) {
 
   const handleDownload = async (file) => {
     try {
-      const { data } = await axios.get(`http://localhost:8000/download-file`, {
-        params: { file_name: file.name },
-      });
+      const { data } = await axios.get(
+        `${process.env.BACKEND_URI}/download-file`,
+        {
+          params: { file_name: file.name },
+        }
+      );
 
       const downloadUrl = data.url;
       console.log("Download URL:", downloadUrl);

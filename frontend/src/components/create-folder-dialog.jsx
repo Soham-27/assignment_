@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+const BACKEND_URI = process.env.BACKEND_URI;
 
 export function CreateFolderDialog({ open, onOpenChange, onSubmit }) {
   const [folderName, setFolderName] = useState("");
@@ -27,9 +28,12 @@ export function CreateFolderDialog({ open, onOpenChange, onSubmit }) {
     setError("");
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/folders", {
-        name: folderName.trim(),
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URI}/folders`,
+        {
+          name: folderName.trim(),
+        }
+      );
       console.log(response.data);
       onSubmit(response.data.name); // Send the created folder data to parent
       setFolderName("");

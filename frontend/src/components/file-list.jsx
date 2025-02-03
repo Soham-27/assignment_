@@ -26,7 +26,7 @@ export function FileList({ currentFolder, onNavigate }) {
       setLoading(true);
       setError(null);
       const response = await axios.get(
-        `http://127.0.0.1:8000/folders/${folderId}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URI}/folders/${folderId}`
       );
       setFiles(response.data || []);
     } catch (err) {
@@ -43,7 +43,9 @@ export function FileList({ currentFolder, onNavigate }) {
     }
 
     try {
-      await axios.delete(`http://127.0.0.1:8000/file/${file.id}`);
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_BACKEND_URI}/file/${file.id}`
+      );
       setFiles((prevFiles) => prevFiles.filter((f) => f.id !== file.id));
       alert(`File "${file.name}" deleted successfully.`);
     } catch (error) {
@@ -54,9 +56,12 @@ export function FileList({ currentFolder, onNavigate }) {
 
   const handleDownload = async (file) => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/download-file/", {
-        params: { file_name: file.name },
-      });
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URI}/download-file/`,
+        {
+          params: { file_name: file.name },
+        }
+      );
 
       const downloadUrl = response.data.url;
       if (!downloadUrl) {

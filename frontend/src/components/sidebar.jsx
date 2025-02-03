@@ -29,7 +29,7 @@ export function Sidebar({ folders, currentFolder, onNavigate, setFolders }) {
   const handleRename = async () => {
     try {
       const response = await axios.patch(
-        `http://localhost:8000/folders/${selectedFolder.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URI}/folders/${selectedFolder.id}`,
         {
           name: newFolderName,
         }
@@ -47,7 +47,9 @@ export function Sidebar({ folders, currentFolder, onNavigate, setFolders }) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8000/folders/${selectedFolder.id}`);
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_BACKEND_URI}/folders/${selectedFolder.id}`
+      );
       setFolders((prevFolders) =>
         prevFolders.filter((folder) => folder.id !== selectedFolder.id)
       );

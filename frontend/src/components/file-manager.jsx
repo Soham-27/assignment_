@@ -19,11 +19,11 @@ export default function FileManager() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isRenameFolderOpen, setIsRenameFolderOpen] = useState(false);
   const [folderToRename, setFolderToRename] = useState(null);
-
+  const backendUri = process.env.NEXT_PUBLIC_BACKEND_URI;
   // Fetch folders from the API
   useEffect(() => {
     axios
-      .get("http://localhost:8000/folders/")
+      .get(`${backendUri}/folders/`)
       .then((response) => {
         const fetchedFolders = response.data.map((folder) => ({
           id: folder.id,

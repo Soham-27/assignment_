@@ -39,7 +39,7 @@ export function RenameFolderDialog({
 
     try {
       const response = await axios.patch(
-        `http://127.0.0.1:8000/folders/${folderToRename.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URI}/folders/${folderToRename.id}`,
         {
           name: newName.trim(),
         }
