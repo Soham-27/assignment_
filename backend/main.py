@@ -15,6 +15,10 @@ from botocore.config import Config
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 import dotenv
 import os
+from fastapi import FastAPI
+from schedular import start_scheduler,stop_scheduler
+from routes.health import router as health_router
+
 dotenv.load_dotenv()
 
 R2_ACCESS_KEY_ID = os.getenv("R2_ACCESS_KEY_ID")
@@ -45,6 +49,21 @@ app=FastAPI(
     title="Google Drive API",
     description="Assignement"
 )
+
+app.include_router(health_router)
+
+
+@app.on_event("startup")
+def on_startup():
+    """ Start the scheduler when the app starts """
+    start_scheduler()
+
+@app.on_event("shutdown")
+def on_shutdown():
+    """ Shut down the scheduler when the app stops """
+    stop_scheduler()
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allows all origins, replace with specific origins if needed
@@ -134,6 +153,8 @@ def list_files():
 async def update_folder(folder_id:str,data:CreateFolderModel):  
     folder=await folder_service.update_folder_by_id(session,folder_id=folder_id,data=data)
     return folder
+
+
 
 
 ###############################################################################################################
