@@ -27,10 +27,6 @@ R2_ACCESS_KEY_ID = os.getenv("R2_ACCESS_KEY_ID")
 R2_SECRET_ACCESS_KEY = os.getenv("R2_SECRET_ACCESS_KEY")
 R2_BUCKET_NAME = os.getenv("R2_BUCKET_NAME")
 R2_ENDPOINT = os.getenv("R2_ENDPOINT")
-print(R2_ACCESS_KEY_ID)
-print(R2_SECRET_ACCESS_KEY)
-print(R2_BUCKET_NAME)
-print(R2_ENDPOINT)
 
 # Initialize S3 client for Cloudflare R2
 s3_client = boto3.client(
@@ -47,20 +43,11 @@ s3_client = boto3.client(
 folder_service=FolderService()
 file_service=FileService()
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Lifecycle events for startup and shutdown"""
-    print("Starting scheduler...")
-    start_scheduler()  # Start APScheduler when FastAPI starts
-    yield
-    print("Stopping scheduler...")
-    stop_scheduler()  # Stop APScheduler when FastAPI shuts down
 
 
 app=FastAPI(
     title="Google Drive API",
     description="Assignement",
-    lifespan=lifespan
 )
 
 app.include_router(health_router)
