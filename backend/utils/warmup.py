@@ -1,8 +1,10 @@
 import requests
+import os
 
+BACKEND_URI=os.getenv("BACKEND_URI")
 def warm_up_server():
     """Send a request to the server to keep it warm."""
-    url = "http://127.0.0.1:8000/health"  # Change this to your actual API URL
+    url = f"{BACKEND_URI}/health"  # Change this to your actual API URL
     try:
         response = requests.get(url)
         print(f"Warm-up ping status: {response.status_code}")

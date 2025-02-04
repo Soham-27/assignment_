@@ -18,6 +18,8 @@ import os
 from fastapi import FastAPI
 from schedular import start_scheduler,stop_scheduler
 from routes.health import router as health_router
+from contextlib import asynccontextmanager
+
 
 dotenv.load_dotenv()
 
@@ -45,23 +47,26 @@ s3_client = boto3.client(
 folder_service=FolderService()
 file_service=FileService()
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifecycle events for startup and shutdown"""
+    print("Starting scheduler...")
+    start_scheduler()  # Start APScheduler when FastAPI starts
+    yield
+    print("Stopping scheduler...")
+    stop_scheduler()  # Stop APScheduler when FastAPI shuts down
+
+
 app=FastAPI(
     title="Google Drive API",
-    description="Assignement"
+    description="Assignement",
+    lifespan=lifespan
 )
 
 app.include_router(health_router)
 
 
-@app.on_event("startup")
-def on_startup():
-    """ Start the scheduler when the app starts """
-    start_scheduler()
 
-@app.on_event("shutdown")
-def on_shutdown():
-    """ Shut down the scheduler when the app stops """
-    stop_scheduler()
 
 
 app.add_middleware(
