@@ -8,18 +8,18 @@ import { CreateFolderDialog } from "./create-folder-dialog";
 import { UploadDialog } from "./upload-dialog";
 import { RenameFolderDialog } from "./rename-folder-dialog";
 import axios from "axios"; // Import axios
-import { Search, ChevronLeft, Menu } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { ChevronLeft, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function FileManager() {
   const [files, setFiles] = useState([]); // Holds file and folder data
-  const [currentFolder, setCurrentFolder] = useState(null); // Set initial folder to null or a valid folder ID
+  const [currentFolder, setCurrentFolder] = useState(null);
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isRenameFolderOpen, setIsRenameFolderOpen] = useState(false);
   const [folderToRename, setFolderToRename] = useState(null);
   const backendUri = process.env.NEXT_PUBLIC_BACKEND_URI;
+
   // Fetch folders from the API
   useEffect(() => {
     axios
@@ -29,10 +29,10 @@ export default function FileManager() {
           id: folder.id,
           name: folder.name,
           type: "folder",
-          parentId: null, // Parent ID can be added later if needed
-          createdAt: new Date(), // Just a placeholder
+          parentId: null,
+          createdAt: new Date(),
         }));
-        setFiles(fetchedFolders); // Set the fetched folders to the state
+        setFiles(fetchedFolders);
       })
       .catch((error) => {
         console.error("Error fetching folders:", error);
@@ -88,11 +88,14 @@ export default function FileManager() {
 
   return (
     <div className="flex h-screen">
+      {/* Desktop Sidebar */}
       <div className="hidden md:block w-80 border-r">{renderSidebar()}</div>
+
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 py-4 border-b px-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
+              {/* Mobile Sidebar (Sheet) */}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="md:hidden">
@@ -101,22 +104,32 @@ export default function FileManager() {
                 </SheetTrigger>
                 <SheetContent side="left" className="w-64 p-0">
                   {renderSidebar()}
+                  {/* Add New Folder button inside mobile sidebar */}
+                  <div className="p-4 border-t">
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => setIsCreateFolderOpen(true)}
+                    >
+                      New Folder
+                    </Button>
+                  </div>
                 </SheetContent>
               </Sheet>
+
+              {/* Navigate Up Button */}
               {currentFolder && (
                 <Button variant="ghost" size="icon" onClick={navigateUp}>
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
               )}
-              {/* <h2 className="text-lg font-semibold truncate">
-                {currentFolder ? `Folder ${currentFolder}` : "No Folder"}
-              </h2> */}
             </div>
+
+            {/* Buttons for New Folder & Upload */}
             <div className="flex gap-2">
               <Button
                 variant="outline"
                 onClick={() => setIsCreateFolderOpen(true)}
-                className="hidden sm:inline-flex"
               >
                 New Folder
               </Button>
@@ -125,18 +138,18 @@ export default function FileManager() {
               )}
             </div>
           </div>
-          {/* <div className="relative flex-1 max-w-md mx-auto">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search files..." className="pl-8" />
-          </div> */}
         </header>
+
+        {/* File List */}
         <main className="flex-1 overflow-auto p-4">
           <FileList
-            currentFolder={currentFolder} // Pass currentFolder here
+            currentFolder={currentFolder}
             onNavigate={setCurrentFolder}
           />
         </main>
       </div>
+
+      {/* Modals */}
       <CreateFolderDialog
         open={isCreateFolderOpen}
         onOpenChange={setIsCreateFolderOpen}
