@@ -6,11 +6,9 @@ This project is a simplified Google Drive clone using **FastAPI**, **PostgreSQL*
 
 ## 🚀 Features
 
-✅ Create, update, and delete folders
-✅ Upload files using pre-signed URLs (Cloudflare R2)
-✅ List, delete, and download files
-✅ PostgreSQL for metadata storage
-✅ CORS support for frontend integration
+- ✅ Create, update, and delete folders
+- ✅ Support Bulk file uploads (Cloudflare R2)
+- ✅ List, delete, and download files
 
 ---
 
@@ -26,7 +24,13 @@ This project is a simplified Google Drive clone using **FastAPI**, **PostgreSQL*
 
 ## 🏗️ Architecture Diagram
 
-![Architecture](./image.png)
+## ![Architecture](./image.png)
+
+## Demo Video
+
+## https://drive.google.com/file/d/1ZQMOLEjfQ21XP2O4wuaYoo05YE0BWYLs/view?usp=sharing
+
+---
 
 ## ⚙️ Installation & Setup
 
@@ -35,7 +39,6 @@ This project is a simplified Google Drive clone using **FastAPI**, **PostgreSQL*
 #### 🔹 Prerequisites
 
 - Python 3.8+
-- PostgreSQL installed & running
 - Cloudflare R2 credentials
 
 #### 🔹 Install Dependencies
@@ -68,7 +71,7 @@ Deployed Backend is at : **https://assignment-hnb0.onrender.com/**
 
 ---
 
-### 2️⃣ Frontend Setup (Optional)
+### 2️⃣ Frontend Setup
 
 ```bash
 cd frontend
@@ -83,30 +86,3 @@ Frontend will be available at: **http://localhost:3000**
 ## API Documentation
 
 API documentation available at : **https://assignment-hnb0.onrender.com/docs**
-
-## 🔗 API Endpoints
-
-### 📁 Folder Management
-
-| Method | Endpoint               | Description        |
-| ------ | ---------------------- | ------------------ |
-| GET    | `/folders`             | Get all folders    |
-| POST   | `/folders`             | Create a folder    |
-| PATCH  | `/folders/{folder_id}` | Update folder name |
-| DELETE | `/folders/{folder_id}` | Delete folder      |
-
-### 📄 File Management
-
-| Method | Endpoint                  | Description                 |
-| ------ | ------------------------- | --------------------------- |
-| GET    | `/folders/{folder_id}`    | Get files in a folder       |
-| POST   | `/file`                   | Add file metadata to DB     |
-| DELETE | `/file/{file_id}`         | Delete file metadata        |
-| GET    | `/generate-presigned-url` | Get pre-signed upload URL   |
-| GET    | `/download-file`          | Get pre-signed download URL |
-
-### 🩺 Health Check
-
-| Method | Endpoint  | Description      |
-| ------ | --------- | ---------------- |
-| GET    | `/health` | Check API status |
