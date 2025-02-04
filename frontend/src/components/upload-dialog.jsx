@@ -78,7 +78,7 @@ export function UploadDialog({ open, onOpenChange, folderId }) {
           folder_id: String(folderId),
           file_name: String(file.name),
           file_size: String(file.size),
-          file_path: String(file.path), // Store the file key (not full URL)
+          file_path: String(file.path), // Store the file path for download
         });
 
         console.log(`File uploaded successfully: ${file.name}`);
