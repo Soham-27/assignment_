@@ -1,14 +1,14 @@
 import boto3.session
 from fastapi import FastAPI,HTTPException,Query
-from folder_controller import FolderService
+
 from sqlalchemy.ext.asyncio import async_sessionmaker
-from db import engine
+from database.db import engine
 from schema import FolderModel,FileModel,CreateFolderModel,FileCreate
 from http import HTTPStatus
 import uuid
-from models import Folder,File
+from database.models import Folder,File
 from typing import List
-from file_controller import FileService
+
 from fastapi.middleware.cors import CORSMiddleware
 import boto3
 from botocore.config import Config
@@ -19,10 +19,12 @@ from fastapi import FastAPI
 from schedular import start_scheduler,stop_scheduler
 from routes.health import router as health_router
 from contextlib import asynccontextmanager
-
+from routes.folder_controller import router as folder_router
+from routes.file_controller import router as file_router
+from routes.r2_controller import router as r2_router
 
 dotenv.load_dotenv()
-
+ 
 R2_ACCESS_KEY_ID = os.getenv("R2_ACCESS_KEY_ID")
 R2_SECRET_ACCESS_KEY = os.getenv("R2_SECRET_ACCESS_KEY")
 R2_BUCKET_NAME = os.getenv("R2_BUCKET_NAME")
@@ -40,20 +42,15 @@ s3_client = boto3.client(
 
 
 
-folder_service=FolderService()
-file_service=FileService()
-
-
-
 app=FastAPI(
     title="Google Drive API",
     description="Assignement",
 )
 
 app.include_router(health_router)
-
-
-
+app.include_router(folder_router)
+app.include_router(file_router)
+app.include_router(r2_router)
 
 
 app.add_middleware(
@@ -73,26 +70,11 @@ session=async_sessionmaker(
 async def hello():
     return {"message":"Hello World !!"}
 
-###############################FOLDER ROUTES################################################
-@app.get("/folders",response_model=list[FolderModel])
-async def get_all_folders():
-    folders=await folder_service.get_all(session)
-    return folders
 
-@app.post("/folders",response_model=FolderModel,status_code=HTTPStatus.CREATED)
-async def create_folder(folder_data:CreateFolderModel)->dict:
-    new_folder=Folder(
-        id=str(uuid.uuid4()),
-        name=folder_data.name
-    )
-    folder=await folder_service.add(session,new_folder)
-    return folder   
-    
 
-@app.delete("/folders/{folder_id}")
-async def delete_folder(folder_id:str):
-    await folder_service.delete_by_id(session,folder_id=folder_id)
-    
+
+
+
 @app.get("/generate-presigned-url/")
 def generate_presigned_url(file_name: str):
     if not file_name:
@@ -131,43 +113,3 @@ def generate_download_url(file_name: str = Query(...)):
         return {"error": "Invalid credentials."}
     except Exception as e:
         return {"error": f"An error occurred: {str(e)}"}
-
-
-
-
-
-@app.patch("/folders/{folder_id}",response_model=FolderModel)
-async def update_folder(folder_id:str,data:CreateFolderModel):  
-    folder=await folder_service.update_folder_by_id(session,folder_id=folder_id,data=data)
-    return folder
-
-
-
-
-###############################################################################################################
-################################################FILE ROUTES####################################################
-###############################################################################################################
-
-
-@app.get('/folders/{folder_id}',response_model=list[FileModel])
-async def get_files_by_folder_id(folder_id:str):
-    files=await file_service.get_files_for_specific_folder(session,folder_id)
-    return files
-
-
-@app.delete('/file/{file_id}')
-async def delete_file(file_id:str):
-    await file_service.delete_file_by_id(session,file_id=file_id)
-    
-    
-
-
-@app.post("/file",response_model=FileModel)
-async def add_file(file_data:FileCreate):
-    print(file_data)
-    file=await file_service.add_file(session,
-                file_data.folder_id,
-                file_data.file_name,
-                file_data.file_size,
-                file_data.file_path)
-    return file
