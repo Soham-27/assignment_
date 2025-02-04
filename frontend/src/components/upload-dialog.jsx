@@ -78,7 +78,7 @@ export function UploadDialog({ open, onOpenChange, folderId }) {
           folder_id: String(folderId),
           file_name: String(file.name),
           file_size: String(file.size),
-          file_path: String(file.name), // Store the file key (not full URL)
+          file_path: String(file.path), // Store the file key (not full URL)
         });
 
         console.log(`File uploaded successfully: ${file.name}`);
@@ -100,7 +100,7 @@ export function UploadDialog({ open, onOpenChange, folderId }) {
       const { data } = await axios.get(
         `${process.env.BACKEND_URI}/download-file`,
         {
-          params: { file_name: file.name },
+          params: { file_name: file.path },
         }
       );
 
