@@ -26,6 +26,10 @@ This project is a simplified Google Drive clone using **FastAPI**, **PostgreSQL*
 
 ## ![Architecture](./image.png)
 
+## Deployed Link
+
+# https://assignment-pied-eta.vercel.app/
+
 ## Demo Video
 
 ## https://drive.google.com/file/d/1ZQMOLEjfQ21XP2O4wuaYoo05YE0BWYLs/view?usp=sharing
