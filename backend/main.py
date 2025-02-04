@@ -134,12 +134,7 @@ def generate_download_url(file_name: str = Query(...)):
 
 
 
-@app.get("/list-files/")
-def list_files():
-    response = s3_client.list_objects_v2(Bucket=R2_BUCKET_NAME)
-    if "Contents" in response:
-        return {"files": [obj["Key"] for obj in response["Contents"]]}
-    return {"files": []}
+
 
 @app.patch("/folders/{folder_id}",response_model=FolderModel)
 async def update_folder(folder_id:str,data:CreateFolderModel):  

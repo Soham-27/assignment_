@@ -70,8 +70,6 @@ Deployed Backend is at : **https://assignment-hnb0.onrender.com/**
 
 ### 2️⃣ Frontend Setup (Optional)
 
-If you have a separate frontend:
-
 ```bash
 cd frontend
 npm install  # Install dependencies
@@ -81,6 +79,10 @@ npm run dev  # Start frontend
 Frontend will be available at: **http://localhost:3000**
 
 ---
+
+## API Documentation
+
+API documentation available at : **https://assignment-hnb0.onrender.com/docs**
 
 ## 🔗 API Endpoints
 
